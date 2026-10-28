@@ -10,6 +10,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python }}
+          cache: pip
       - run: pip install -r requirements.txt
       - run: pytest -v
+
+      - name: Show secret is masked
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: | 
+          echo "key = $OPENAI_API_KEY"        # log 會顯示 key = ***
+      - run: pytest -v --cov=app --cov-fail-under=90
